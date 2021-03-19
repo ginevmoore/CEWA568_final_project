@@ -2,7 +2,7 @@
 Snow hydrology analysis of the South Fork Tolt River Basin
 In Collaboration with Christian Vanderhoeven at UW Civil Engineering.
 
-Tools and analysis for investigating changes in the snowpack and downstream hydrologic effects over the last 20 years using Snotel and USGS stream gage data.
+This repository contains tools and a test-case analysis for investigating changes in the snowpack and downstream hydrologic effects over the last 20 years using Snotel and USGS stream gage data.
 
 The primary table of our final results is listed in tables/tolt_with_date_differences.csv
 
