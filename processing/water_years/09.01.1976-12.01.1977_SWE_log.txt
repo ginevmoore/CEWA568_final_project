@@ -1,0 +1,3 @@
+Input arguments to plotyear.py: 
+
+Namespace(bounds=['09.01.1976', '12.01.1977'], c1='SWE_in', c2=None, infile_snotel='../data/skookum_snotel.csv', infile_stream='../data/all_data_12147600.csv', mm=None, nl='y', op='water_years/09.01.1976-12.01.1977_SWE.png', p15dm=None, p1dm='y', p30dm=None, u1='[inches]', u2=None)

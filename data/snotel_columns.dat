@@ -1,0 +1,8 @@
+1st col: year
+2nd col: month
+3rd col: day
+4th col: daily precipitation, in inch
+5th col: maximum air temperature, in °F
+6th col: minimum air temperature, in °F
+7th col: mean air temperature, in °F
+8th col: SWE, in inch, reset to zero on 1 October at the start of each water year

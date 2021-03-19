@@ -1,0 +1,3 @@
+Input arguments to plotyear.py: 
+
+Namespace(bounds=['11.01.88', '11.01.89'], c1='mean_discharge', c2=None, infile='/Users/ginevramoore/Desktop/CEWA568/final_project/data/all_data_12147600.csv', op='water_years/12147600_11.01.88-11.01.89.png', p15dm='y', p1dm='y', p30dm='y', u1='[ft^3/m]', u2=None)
