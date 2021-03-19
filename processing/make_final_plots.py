@@ -5,13 +5,17 @@ import os
 import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize
 
+# reading tables
 bigtable = pd.read_csv('../tables/tolt_with_date_differences.csv')
 justdis = pd.read_csv('../tables/minmaxval_table_flow.csv')
 justwtemp = pd.read_csv('../tables/minmaxval_table_wtemp.csv')
 justSWE = pd.read_csv('../tables/minmaxval_table_SWE.csv')
 
+# initiating summary timing plot
 fig = plt.figure(figsize=(8, 4))
 ax1 = fig.add_subplot(111)
+
+# plotting vertical lines for each year, and solid lines for the duration of spring melt
 for index, row in bigtable.iterrows():
     year = row['year']
     ax1.plot([year, year], [0, 365], 'k-.', linewidth=0.2)
@@ -19,16 +23,19 @@ for index, row in bigtable.iterrows():
     melt_end = row['SPejul']
     p0 = ax1.plot([year, year], [melt_start, melt_end], 'k-', linewidth=0.5, label='spring melt')
 
+# plotting scatter points for legend purposes
 p1 = ax1.scatter(bigtable.year, bigtable.SPsjul, marker='o', color='green',s=15, label='melt start date')
 p2 = ax1.scatter(bigtable.year, bigtable.SPejul, marker='o', color='grey',s=15, label='melt end date')
 p3 = ax1.scatter(bigtable.year, bigtable.min_flow_jul, marker='o', color='red',s=15, label='min flow date')
 p4 = ax1.scatter(bigtable.year, bigtable.max_flow_jul, marker='o', color='blue',s=15, label='max flow date')
 
+# plotting gradient-colored scatter points on top of solid colors
 p5 = ax1.scatter(bigtable.year, bigtable.SPsjul, c=bigtable.max_swe, cmap='Greens', edgecolor='green',s=30, label='Max SWE [in]: min=%0.1f, max=%0.1f' % (bigtable['max_swe'].min(), bigtable['max_swe'].max()))
 p6 = ax1.scatter(bigtable.year, bigtable.SPejul, c=bigtable.SWE_at_SP_melt, cmap='Greys', edgecolor='grey',s=30, label='SWE at melt onset [in]: min=%0.1f, max=%0.1f' % (bigtable['SWE_at_SP_melt'].min(), bigtable['SWE_at_SP_melt'].max()))
 p7 = ax1.scatter(bigtable.year, bigtable.min_flow_jul, c=bigtable.min_discharge, cmap='Reds', edgecolor='red',s=30, label='Min discharge [ft^3/s]: min=%0.1f, max=%0.1f' % (bigtable['min_discharge'].min(), bigtable['min_discharge'].max()))
 p8 = ax1.scatter(bigtable.year, bigtable.max_flow_jul,  c=bigtable.max_discharge, cmap='Blues', edgecolor='blue',s=30, label='Max discharge [ft^3/s]: min=%0.1f, max=%0.1f' % (bigtable['max_discharge'].min(), bigtable['max_discharge'].max()))
 
+# creating a twin axes to add month labels
 ax2 = ax1.twinx()
 color = 'tab:black'
 ax2.set_ylim([1, 13])
@@ -38,19 +45,18 @@ ends = begs + 1
 for i in range(len(begs)):
     plt.axhspan(begs[i], ends[i], alpha=0.05, color='gray')
 ax2.set_ylabel('month')
-
 ax1.set_title('timing of melt and low flow')
 ax1.set_xlabel('water year (labeled with spring year)')
 ax1.set_ylabel('julian day (days since Jan 1st)')
 ax1.set_ylim([0, 365])
-#ax1.legend(loc='best')
 ax1.legend(handles=[p1, p2, p3, p4, p5, p6, p7, p8], bbox_to_anchor=(1.1, 1), loc='upper left')
 fig.savefig('final_plots/melt_timing.png',format='png',
         bbox_inches='tight', pad_inches=0.5,dpi=300)
 plt.close()
 
-
+# initiating z-table figure
 fig = plt.figure(figsize=(10, 10))
+# plotting melt_period_length = f(year)
 ax1 = fig.add_subplot(421)
 ax1.axvspan(1996,2006, alpha=0.05, color='grey')
 ax1.axvspan(2007,2018, alpha=0.05, color='red')
@@ -58,6 +64,7 @@ ax1.scatter(bigtable.year, bigtable.melt_period_days, marker='o', color='green',
 ax1.plot(bigtable.year, bigtable.melt_period_days, 'g--', linewidth=0.5)
 ax1.set_ylabel('melt period length [days]')
 
+# plotting max_swe = f(year)
 ax1 = fig.add_subplot(422)
 ax1.axvspan(1996,2006, alpha=0.05, color='grey')
 ax1.axvspan(2007,2018, alpha=0.05, color='red')
@@ -65,6 +72,7 @@ ax1.scatter(bigtable.year, bigtable.max_swe, marker='o', color='green',s=10)
 ax1.plot(bigtable.year, bigtable.max_swe, 'g--', linewidth=0.5)
 ax1.set_ylabel('max SWE [in]')
 
+# plotting peak_melt_rate = f(year)
 ax1 = fig.add_subplot(423)
 ax1.axvspan(1996,2006, alpha=0.05, color='grey')
 ax1.axvspan(2007,2018, alpha=0.05, color='red')
@@ -72,6 +80,7 @@ ax1.scatter(bigtable.year, bigtable.peak_melt_rate, marker='o', color='green',s=
 ax1.plot(bigtable.year, bigtable.peak_melt_rate, 'g--', linewidth=0.5)
 ax1.set_ylabel('melt rate [in SWE/day]')
 
+# plotting n_mwme = f(year)
 ax1 = fig.add_subplot(424)
 ax1.axvspan(1996,2006, alpha=0.05, color='grey')
 ax1.axvspan(2007,2018, alpha=0.05, color='red')
@@ -79,6 +88,7 @@ ax1.scatter(bigtable.year, bigtable.n_mwme, marker='o', color='green',s=10, labe
 ax1.plot(bigtable.year, bigtable.n_mwme, 'g--', linewidth=0.5)
 ax1.set_ylabel('n mid-winter melt events')
 
+# plotting min_discharge = f(year)
 ax1 = fig.add_subplot(425)
 ax1.axvspan(1996,2006, alpha=0.05, color='grey')
 ax1.axvspan(2007,2018, alpha=0.05, color='red')
@@ -86,6 +96,7 @@ ax1.scatter(bigtable.year, bigtable.min_discharge, marker='o', color='green',s=1
 ax1.plot(bigtable.year, bigtable.min_discharge, 'g--', linewidth=0.5)
 ax1.set_ylabel('min discharge [ft^3/s]')
 
+# plotting max_discharge = f(year)
 ax1 = fig.add_subplot(426)
 ax1.axvspan(1996,2006, alpha=0.05, color='grey')
 ax1.axvspan(2007,2018, alpha=0.05, color='red')
@@ -93,6 +104,7 @@ ax1.scatter(bigtable.year, bigtable.max_discharge, marker='o', color='green',s=1
 ax1.plot(bigtable.year, bigtable.max_discharge, 'g--', linewidth=0.5)
 ax1.set_ylabel('max discharge [ft^3/s]')
 
+# plotting min_flow_jul = f(year)
 ax1 = fig.add_subplot(427)
 ax1.axvspan(1996,2006, alpha=0.05, color='grey')
 ax1.axvspan(2007,2018, alpha=0.05, color='red')
@@ -101,6 +113,7 @@ ax1.plot(bigtable.year, bigtable.min_flow_jul, 'g--', linewidth=0.5)
 ax1.set_xlabel('year')
 ax1.set_ylabel('doy min discharge')
 
+# plotting max_flow_jul = f(year)
 ax1 = fig.add_subplot(428)
 ax1.axvspan(1996,2006, alpha=0.05, color='grey')
 ax1.axvspan(2007,2018, alpha=0.05, color='red')
@@ -113,6 +126,7 @@ fig.savefig('final_plots/ztest_values.png',format='png',
         bbox_inches='tight', pad_inches=0.5,dpi=300)
 plt.close()
 
+# plotting annual maximum discharge dependence on annual maximum swe
 fig = plt.figure(figsize=(4, 4))
 ax1 = fig.add_subplot(111)
 plt.yscale('log')
@@ -126,6 +140,7 @@ fig.savefig('final_plots/discharge_vs_swe.png',format='png',
         bbox_inches='tight', pad_inches=0.5,dpi=300)
 plt.close()
 
+# plotting annual minimum discharge dependence on peak melt rate
 fig = plt.figure(figsize=(4, 4))
 ax1 = fig.add_subplot(111)
 plt.yscale('log')
@@ -139,6 +154,7 @@ fig.savefig('final_plots/discharge_vs_meltrate.png',format='png',
         bbox_inches='tight', pad_inches=0.5,dpi=300)
 plt.close()
 
+# plotting annual minimum discharge dependence on n mid-winter melt events
 fig = plt.figure(figsize=(4, 4))
 ax1 = fig.add_subplot(111)
 plt.yscale('log')
